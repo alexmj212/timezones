@@ -1,23 +1,110 @@
 <html>
     <head>
         <script>
+
             var date = new Date();
-            window.onload = function() {
-                var clock = document.getElementById('clock').innerHTML = date.toLocaleTimeString();
+
+            var coors = {
+                position: 0,
+                dposition: 0.10472,
+                radius: 250,
+                x: 0,
+                y: 0
             }
+
+            coors['center'] = { x: (250 - 6), y: (250  -6) };
+
+            coors.position = coors.dposition * date.getSeconds() - 95 * Math.PI/180;
+
+
+            function setTime() {
+                
+                // grab second hand element
+                var secondHand = document.getElementById('second-hand');
+
+                // set time
+                var date = new Date();
+                document.getElementById('time').innerHTML = date.toLocaleTimeString();
+
+                // increment radian position
+                coors.position += coors.dposition;
+
+                // set x
+                secondHand.style.top = coors.x = coors.center.x + ( coors.radius * Math.sin(coors.position)) + 'px';
+
+                // set y
+                secondHand.style.left = coors.y = coors.center.y + ( coors.radius * Math.cos(coors.position)) + 'px';
+
+                // log pos
+                console.log('New X:', coors.x, 'New Y:', coors.y);
+
+            }
+
+            window.onload = function() {
+                document.getElementById('center').style.top = coors.center.x;
+                document.getElementById('center').style.left = coors.center.y;
+                setTime();
+            }
+
+            setInterval(setTime, 1000);
         </script>
         <style>
+            body {
+                margin: 0;
+            }
+
+            #clock-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                height: 100%;
+                width: 100%;
+            }
+
             #clock {
+                position: relative;
                 border: 2px solid black;
-                padding: 20px;
                 width: 500px;
                 height: 500px;
+                border-radius: 50%;
+            }
+
+            #time {
+                position: relative;
+                height: 1em;
+            }
+
+            #second-hand {
+                position: absolute;
+                border: 2px solid red;
+                border-radius: 50%;
+                width: 10px;
+                height: 10px;
+                transition: all 0.3ms ease;
+            }
+
+            #center {
+                position: absolute;
+                width: 5px;
+                height: 5px;
+                border: 2px solid red;
+                border-radius: 50%;
             }
         </style>
     </head>
     <body>
-        <div id="clock">
 
+        <div id="clock-container">
+            <div id="time">
+
+            </div>
+            <div id="clock">
+                <div id="second-hand">
+
+                </div>
+                <div id="center"></div>
+            </div>
         </div>
     </body>
 </html>
