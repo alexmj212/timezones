@@ -4,49 +4,101 @@
 
             var date = new Date();
 
-            var coors = {
+            var clock = {
+                radius: 250
+            }
+
+            var secondHand = {
                 position: 0,
                 dposition: 0.10472,
-                radius: 250,
+                x: 0,
+                y: 0
+            }
+            var minuteHand = {
+                position: 0,
+                dposition: 0.10472,
+                x: 0,
+                y: 0
+            }
+            var hourHand = {
+                position: 0,
+                dposition: 0.523599,
                 x: 0,
                 y: 0
             }
 
-            coors['center'] = { x: (250 - 6), y: (250  -6) };
+            secondHand['center'] = { x: (250 - 6), y: (250 - 6) };
 
-            coors.position = coors.dposition * date.getSeconds() - 95 * Math.PI/180;
+            secondHand.position = (secondHand.dposition * (date.getSeconds() - 1)) - 90 * Math.PI/180;
+            minuteHand.position = (minuteHand.dposition * (date.getMinutes() - 1)) - 90 * Math.PI/180;
+            hourHand.position = (hourHand.dposition * (date.getHours() - 1 )) - 90 * Math.PI/180;
 
 
-            function setTime() {
+            function setSeconds() {
                 
                 // grab second hand element
-                var secondHand = document.getElementById('second-hand');
+                var secondHandElement = document.getElementById('second-hand');
 
                 // set time
                 var date = new Date();
                 document.getElementById('time').innerHTML = date.toLocaleTimeString();
 
                 // increment radian position
-                coors.position += coors.dposition;
+                secondHand.position += secondHand.dposition;
 
                 // set x
-                secondHand.style.top = coors.x = coors.center.x + ( coors.radius * Math.sin(coors.position)) + 'px';
+                secondHandElement.style.top = secondHand.x = secondHand.center.x + ( clock.radius * Math.sin(secondHand.position)) + 'px';
 
                 // set y
-                secondHand.style.left = coors.y = coors.center.y + ( coors.radius * Math.cos(coors.position)) + 'px';
+                secondHandElement.style.left = secondHand.y = secondHand.center.y + ( clock.radius * Math.cos(secondHand.position)) + 'px';
 
-                // log pos
-                console.log('New X:', coors.x, 'New Y:', coors.y);
+                if (date.getSeconds() === 0) {
+                    setMinutes();
+                }
+                if (date.getMinutes() === 0 && date.getSeconds() === 0) {
+                    setHours();
+                }
+
+            }
+
+            function setMinutes() {
+                
+                // grab minute hand element
+                var minuteHandElement = document.getElementById('minute-hand-container');
+
+                // increment radian position
+                minuteHand.position += minuteHand.dposition;
+
+                // set rotation
+                minuteHandElement.style.transform = 'rotate(' + (minuteHand.position + 1.5*Math.PI) + 'rad)';
+
+            }
+
+            function setHours() {
+                
+                // grab hour hand element
+                var hourHandElement = document.getElementById('hour-hand-container');
+
+                // increment radian position
+                hourHand.position += hourHand.dposition;
+
+                // set rotation
+                hourHandElement.style.transform = 'rotate(' + (hourHand.position + 1.5*Math.PI) + 'rad)';
 
             }
 
             window.onload = function() {
-                document.getElementById('center').style.top = coors.center.x;
-                document.getElementById('center').style.left = coors.center.y;
-                setTime();
+
+                document.getElementById('center').style.top = secondHand.center.x;
+                document.getElementById('center').style.left = secondHand.center.y;
+                setSeconds();
+                setMinutes();
+                setHours();
             }
 
-            setInterval(setTime, 1000);
+            // tick tock
+            setInterval(setSeconds, 1000);
+
         </script>
         <style>
             body {
@@ -75,6 +127,40 @@
                 height: 1em;
             }
 
+            #hour-hand-container {
+                position: absolute;
+                height: 30%;
+                width: 1px;
+                top: calc(50% - 4px);
+                left: calc(50% - 4px);
+                transform-origin: top left;
+                transition: all 0.3s ease;
+            }
+            
+            #hour-hand {
+                border: 2px solid black;
+                background-color: black;
+                height: 100%;
+                width: 100%;
+            }
+
+            #minute-hand-container {
+                position: absolute;
+                height: 50%;
+                width: 1px;
+                top: calc(50% - 4px);
+                left: calc(50% - 4px);
+                transform-origin: top left;
+                transition: all 0.3s ease;
+            }
+
+            #minute-hand {
+                border: 2px solid black;
+                background-color: black;
+                height: 100%;
+                width: 100%;
+            }
+
             #second-hand {
                 position: absolute;
                 border: 2px solid red;
@@ -100,9 +186,17 @@
 
             </div>
             <div id="clock">
-                <div id="second-hand">
+                <div id="hour-hand-container">
+                    <div id="hour-hand">
 
+                    </div>
                 </div>
+                <div id="minute-hand-container">
+                    <div id="minute-hand">
+
+                    </div>
+                </div>
+                <div id="second-hand"></div>
                 <div id="center"></div>
             </div>
         </div>
