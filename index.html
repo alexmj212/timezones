@@ -46,7 +46,7 @@
                 // set y
                 secondHandElement.style.left = secondHand.y = clock.center.y + ( clock.radius * Math.cos(secondHand.position)) + 'px';
 
-                if (date.getMinutes() === 0) {
+                if (date.getSeconds() === 0) {
                     setMinutes();
                 }
 
@@ -95,8 +95,7 @@
 
             }
 
-            window.onload = function() {
-
+            function initialize() {
                 clock.radius = document.getElementById('clock').clientWidth/2;
                 var offset = document.getElementById('second-hand').clientWidth/2 + 1;
                 clock['center'] = { x: (clock.radius - offset), y: (clock.radius - offset) };
@@ -109,6 +108,10 @@
                 setMinutes();
                 setHours();
                 setTicks();
+            }
+
+            window.onload = function() {
+                initialize();
             }
 
             // tick tock
