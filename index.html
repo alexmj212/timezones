@@ -17,23 +17,16 @@
             var minuteHand = {
                 position: 0,
                 dposition: 0.10472,
+                dminposition: 0.00174533,
                 x: 0,
                 y: 0
             }
             var hourHand = {
                 position: 0,
                 dposition: 0.523599,
-                dminposition: 0.00872665,
                 x: 0,
                 y: 0
             }
-
-            secondHand['center'] = { x: (250 - 6), y: (250 - 6) };
-
-            secondHand.position = (secondHand.dposition * (date.getSeconds() - 1)) - 90 * Math.PI/180;
-            minuteHand.position = (minuteHand.dposition * (date.getMinutes() - 1)) - 90 * Math.PI/180;
-            hourHand.position = (hourHand.dposition * (date.getHours() - 1 )) - 90 * Math.PI/180;
-
 
             function setSeconds() {
                 
@@ -48,14 +41,15 @@
                 secondHand.position += secondHand.dposition;
 
                 // set x
-                secondHandElement.style.top = secondHand.x = secondHand.center.x + ( clock.radius * Math.sin(secondHand.position)) + 'px';
+                secondHandElement.style.top = secondHand.x = clock.center.x + ( clock.radius * Math.sin(secondHand.position)) + 'px';
 
                 // set y
-                secondHandElement.style.left = secondHand.y = secondHand.center.y + ( clock.radius * Math.cos(secondHand.position)) + 'px';
+                secondHandElement.style.left = secondHand.y = clock.center.y + ( clock.radius * Math.cos(secondHand.position)) + 'px';
 
-                if (date.getSeconds() === 0) {
+                if (date.getMinutes() === 0) {
                     setMinutes();
                 }
+
                 if (date.getMinutes() === 0 && date.getSeconds() === 0) {
                     setHours();
                 }
@@ -88,107 +82,40 @@
 
             }
 
+            function setTicks() {
+
+                // grab hour hand element
+                var tickElement = document.getElementById('tick');
+
+                // set x
+                tickElement.style.top = clock.center.x + ( clock.radius * Math.sin(((-1)*Math.PI)/2) ) + tickElement.getBoundingClientRect().width + 2 + 'px';
+
+                // set y
+                tickElement.style.left = clock.center.y + ( clock.radius * Math.cos(Math.PI/2)) + tickElement.getBoundingClientRect().width + 1 + 'px';
+
+            }
+
             window.onload = function() {
+
+                clock.radius = document.getElementById('clock').clientWidth/2;
+                var offset = document.getElementById('second-hand').clientWidth/2 + 1;
+                clock['center'] = { x: (clock.radius - offset), y: (clock.radius - offset) };
+
+                secondHand.position = (secondHand.dposition * (date.getSeconds() - 1)) - 90 * Math.PI/180;
+                minuteHand.position = (minuteHand.dposition * (date.getMinutes() - 1)) - 90 * Math.PI/180;
+                hourHand.position = (hourHand.dposition * (date.getHours() - 1 )) - 90 * Math.PI/180;
+
                 setSeconds();
                 setMinutes();
                 setHours();
+                setTicks();
             }
 
             // tick tock
             setInterval(setSeconds, 1000);
 
         </script>
-        <style>
-            body {
-                margin: 0;
-                background-color: #ddd;
-            }
-
-            #clock-container {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-direction: column;
-                height: 100%;
-                width: 100%;
-            }
-
-            #clock {
-                position: relative;
-                border: 2px solid black;
-                background-color: white;
-                width: 500px;
-                height: 500px;
-                border-radius: 50%;
-                box-shadow: 0px 2px 5px #222;
-            }
-
-            #time {
-                position: relative;
-                height: 1em;
-                padding: 10px;
-                font-weight: bold;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 50px;
-            }
-
-            #hour-hand-container {
-                position: absolute;
-                height: 30%;
-                width: 10px;
-                top: calc(50% - 4px);
-                left: calc(50% - 4px);
-                transform-origin: top center;
-                transition: all 0.3s ease;
-            }
-            
-            #hour-hand {
-                border: 2px solid black;
-                background-color: black;
-                border-radius: 5px;
-                height: 100%;
-                width: 100%;
-                box-shadow: 0px 0px 2px #222;
-            }
-
-            #minute-hand-container {
-                position: absolute;
-                height: 45%;
-                width: 10px;
-                top: calc(50% - 4px);
-                left: calc(50% - 4px);
-                transform-origin: top center;
-                transition: all 0.3s ease;
-            }
-
-            #minute-hand {
-                border: 2px solid black;
-                background-color: #999;
-                border-radius: 5px;
-                height: 100%;
-                width: 100%;
-                box-shadow: 0px 0px 2px #222;
-            }
-
-            #second-hand {
-                position: absolute;
-                border: 2px solid red;
-                background-color: red;
-                border-radius: 50%;
-                width: 10px;
-                height: 10px;
-                transition: all 0.3s ease;
-                box-shadow: 0px 1px 3px #222;
-            }
-
-            #center {
-                position: absolute;
-                width: 5px;
-                height: 5px;
-                border: 2px solid red;
-                border-radius: 50%;
-            }
-        </style>
+        <link rel="stylesheet" href="styles/styles.css" />
     </head>
     <body>
 
@@ -208,6 +135,7 @@
                     </div>
                 </div>
                 <div id="second-hand"></div>
+                <div id="tick"></div>
             </div>
         </div>
     </body>
