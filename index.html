@@ -1,145 +1,57 @@
 <html>
-    <head>
-        <script>
 
-            var date = new Date();
+<head>
+    <script>
+        window.onload = function () {
+            var clock1 = new Clock(document.getElementById('clock-1')).initialize();
+            var clock2 = new Clock(document.getElementById('clock-2')).initialize();
+        }
+    </script>
+    <script src="scripts/Clock.js"></script>
+    <link rel="stylesheet" href="styles/styles.css" />
+</head>
 
-            var clock = {
-                radius: 250
-            }
-
-            var secondHand = {
-                position: 0,
-                dposition: 0.10472,
-                x: 0,
-                y: 0
-            }
-            var minuteHand = {
-                position: 0,
-                dposition: 0.10472,
-                dminposition: 0.00174533,
-                x: 0,
-                y: 0
-            }
-            var hourHand = {
-                position: 0,
-                dposition: 0.523599,
-                x: 0,
-                y: 0
-            }
-
-            function setSeconds() {
-                
-                // grab second hand element
-                var secondHandElement = document.getElementById('second-hand');
-
-                // set time
-                var date = new Date();
-                document.getElementById('time').innerHTML = date.toLocaleTimeString();
-
-                // increment radian position
-                secondHand.position += secondHand.dposition;
-
-                // set x
-                secondHandElement.style.top = secondHand.x = clock.center.x + ( clock.radius * Math.sin(secondHand.position)) + 'px';
-
-                // set y
-                secondHandElement.style.left = secondHand.y = clock.center.y + ( clock.radius * Math.cos(secondHand.position)) + 'px';
-
-                if (date.getSeconds() === 0) {
-                    setMinutes();
-                }
-
-                if (date.getMinutes() === 0 && date.getSeconds() === 0) {
-                    setHours();
-                }
-
-            }
-
-            function setMinutes() {
-                
-                // grab minute hand element
-                var minuteHandElement = document.getElementById('minute-hand-container');
-
-                // increment radian position
-                minuteHand.position += minuteHand.dposition;
-
-                // set rotation
-                minuteHandElement.style.transform = 'rotate(' + (minuteHand.position + 1.5*Math.PI) + 'rad)';
-
-            }
-
-            function setHours() {
-                
-                // grab hour hand element
-                var hourHandElement = document.getElementById('hour-hand-container');
-
-                // increment radian position
-                hourHand.position += hourHand.dposition;
-
-                // set rotation
-                hourHandElement.style.transform = 'rotate(' + (hourHand.position + 1.5*Math.PI) + 'rad)';
-
-            }
-
-            function setTicks() {
-
-                // grab hour hand element
-                var tickElement = document.getElementById('tick');
-
-                // set x
-                tickElement.style.top = clock.center.x + ( clock.radius * Math.sin(((-1)*Math.PI)/2) ) + tickElement.getBoundingClientRect().width + 2 + 'px';
-
-                // set y
-                tickElement.style.left = clock.center.y + ( clock.radius * Math.cos(Math.PI/2)) + tickElement.getBoundingClientRect().width + 1 + 'px';
-
-            }
-
-            function initialize() {
-                clock.radius = document.getElementById('clock').clientWidth/2;
-                var offset = document.getElementById('second-hand').clientWidth/2 + 1;
-                clock['center'] = { x: (clock.radius - offset), y: (clock.radius - offset) };
-
-                secondHand.position = (secondHand.dposition * (date.getSeconds() - 1)) - 90 * Math.PI/180;
-                minuteHand.position = (minuteHand.dposition * (date.getMinutes() - 1)) - 90 * Math.PI/180;
-                hourHand.position = (hourHand.dposition * (date.getHours() - 1 )) - 90 * Math.PI/180;
-
-                setSeconds();
-                setMinutes();
-                setHours();
-                setTicks();
-            }
-
-            window.onload = function() {
-                initialize();
-            }
-
-            // tick tock
-            setInterval(setSeconds, 1000);
-
-        </script>
-        <link rel="stylesheet" href="styles/styles.css" />
-    </head>
-    <body>
-
-        <div id="clock-container">
-            <div id="time">
+<body>
+    <div class="timezone-container">
+        <div id="clock-1" class="clock-container">
+            <div class="time">
 
             </div>
-            <div id="clock">
-                <div id="hour-hand-container">
-                    <div id="hour-hand">
+            <div class="clock">
+                <div class="hour-hand-container">
+                    <div class="hour-hand">
 
                     </div>
                 </div>
-                <div id="minute-hand-container">
-                    <div id="minute-hand">
+                <div class="minute-hand-container">
+                    <div class="minute-hand">
 
                     </div>
                 </div>
-                <div id="second-hand"></div>
-                <div id="tick"></div>
+                <div class="second-hand"></div>
+                <div class="tick"></div>
             </div>
         </div>
-    </body>
+        <div id="clock-2" class="clock-container">
+            <div class="time">
+
+            </div>
+            <div class="clock">
+                <div class="hour-hand-container">
+                    <div class="hour-hand">
+
+                    </div>
+                </div>
+                <div class="minute-hand-container">
+                    <div class="minute-hand">
+
+                    </div>
+                </div>
+                <div class="second-hand"></div>
+                <div class="tick"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
 </html>
